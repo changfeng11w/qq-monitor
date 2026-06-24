@@ -1,13 +1,10 @@
  const express = require('express');
-const { createClient } = require('oicq');
+const { createClient } = require('icqq');  // 这里换成了 icqq
 const fetch = require('node-fetch');
 
 const app = express();
 app.use(express.json());
 
-// ============================================================
-// 全局状态
-// ============================================================
 let client = null;
 let isRunning = false;
 let isLoggedIn = false;
@@ -21,12 +18,10 @@ let botConfig = {
 };
 let currentQR = null;
 
-// ============================================================
-// 清风邮件引擎
-// ============================================================
+// 以下函数不变
 async function sendInvite(email, token, teamId, inviteType, proxyUrl) {
-    const url = inviteType === 'team' 
-        ? `/v1/teams/${teamId}/invites` 
+    const url = inviteType === 'team' 
+        ? `/v1/teams/${teamId}/invites` 
         : '/v1/referralInvites';
     const payload = {
         requests: [{
@@ -74,9 +69,6 @@ async function sendInvite(email, token, teamId, inviteType, proxyUrl) {
     }
 }
 
-// ============================================================
-// QQ机器人
-// ============================================================
 function startBot() {
     if (client) return;
     currentQR = null;
@@ -138,9 +130,6 @@ function stopBot() {
     }
 }
 
-// ============================================================
-// HTTP 路由
-// ============================================================
 app.get('/ping', (req, res) => {
     res.json({
         code: 0,
@@ -194,9 +183,6 @@ app.post('/stop', (req, res) => {
     res.json({ code: 0, msg: '已停止' });
 });
 
-// ============================================================
-// 启动服务器
-// ============================================================
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`✅ 服务运行在端口 ${PORT}`);
